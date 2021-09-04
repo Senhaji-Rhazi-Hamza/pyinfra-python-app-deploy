@@ -1,10 +1,8 @@
 from pyinfra.operations import apt
 
 apt.packages(
-    name='Ensure nginx is installed',
-    packages=['nginx'],
+    name='Ensure docker is installed',
+    packages=['docker'],
     sudo=True,
     update=True,
 )
-
-

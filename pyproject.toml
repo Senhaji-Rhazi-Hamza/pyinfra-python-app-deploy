@@ -8,9 +8,12 @@ authors = ["Senhaji-Rhazi-Hamza <hamza.senhaji-rhazi@epita.fr>"]
 python = "^3.8"
 pyinfra = "^1.4.11"
 Flask = "^2.0.1"
+gunicorn = "^20.1.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
+flake8 = "^3.9.2"
+autopep8 = "^1.5.7"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

@@ -12,4 +12,5 @@ RUN pip3 install poetry
 RUN poetry config virtualenvs.create false
 RUN poetry install --no-dev
 
-ENTRYPOINT [ "python", "bin/run.py" ]
+# NB -w is the number of workers, it should be set to (2 c + 1) where c is the number of cores of the runing machine
+ENTRYPOINT [ "gunicorn", "app.server:app","-w 3", "--bind 0.0.0.0:5000 ]
