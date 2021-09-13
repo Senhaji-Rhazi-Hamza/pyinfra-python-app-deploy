@@ -1,6 +1,7 @@
 FROM python:3.9
 
-RUN mkdir /app COPY /app /app
+RUN mkdir /app 
+COPY app /app
 COPY pyproject.toml /app
 
 WORKDIR /app

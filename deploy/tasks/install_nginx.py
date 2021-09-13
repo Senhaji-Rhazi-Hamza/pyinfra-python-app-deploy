@@ -1,4 +1,6 @@
 from pyinfra.operations import apt
+from pyinfra.operations import server
+
 
 apt.packages(
     name='Ensure nginx is installed',
@@ -8,3 +10,8 @@ apt.packages(
 )
 
 
+server.shell(
+    name='reload nginx to ensure it has started',
+    commands=['nginx -s reload'],
+    sudo=True,
+)
