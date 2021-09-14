@@ -49,7 +49,7 @@ server.shell(
     name='build and run docker image ',
     commands=[
        # "cd /opt/apps/my_server_app/ && docker image build --rm -t py_app:0.0.0 -f Dockerfile ."
-        f"cd /opt/apps/{APP_NAME}/ && docker image build --rm -t {DOCKER_IMAGE}:{DOCKER_TAG} -f Dockerfile ."
+        f"cd /opt/apps/{APP_NAME}/ && sudo docker image build --rm -t {DOCKER_IMAGE}:{DOCKER_TAG} -f Dockerfile ."
         ],
     get_pty=True,
     sudo=True
