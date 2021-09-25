@@ -49,9 +49,25 @@ server.shell(
     name='build and run docker image ',
     commands=[
        # "cd /opt/apps/my_server_app/ && docker image build --rm -t py_app:0.0.0 -f Dockerfile ."
-        f"cd /opt/apps/{APP_NAME}/ && sudo docker image build --rm -t {DOCKER_IMAGE}:{DOCKER_TAG} -f Dockerfile ."
+        f"cd /opt/apps/{APP_NAME}/ && sudo docker image build --rm -t {DOCKER_IMAGE}:{DOCKER_TAG} -f Dockerfile .",
+        f"sudo docker run -p 5000:5000 -d --restart unless-stopped {DOCKER_IMAGE}:{DOCKER_TAG}"
         ],
     get_pty=True,
     sudo=True
 )
-status, stdout, stderr = host.run_shell_command('ls')
+
+files.put(
+    name='copy nginx conf',
+    src='./templates/nginx.conf',
+    dest='/etc/nginx/sites-available/app.conf',
+    sudo=True,
+)
+
+server.shell(
+    name='run nginx conf',
+    commands=[
+        "sudo ln -s /etc/nginx/sites-available/app.conf /etc/nginx/sites-enabled/",
+        "sudo systemctl restart nginx",
+        ],
+    sudo=True
+)
