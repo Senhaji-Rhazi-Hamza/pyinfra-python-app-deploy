@@ -130,4 +130,4 @@ dmypy.json
 
 .vscode
 
-./deploy/files/*.gz
+*/deploy/files/*.gz
