@@ -35,15 +35,13 @@ files.put(
 
 server.shell(
     name='Untar the code source in the /opt/apps/{APP_NAME} folder and build the app docker image',
-    commands=[f'tar -xvf /opt/apps/{ARCHIVE_NAME} -C /opt/apps/{APP_NAME}'],
+    commands=[
+        f'(test ! -d /opt/apps/{APP_NAME} &&  mkdir /opt/apps/{APP_NAME}) || echo "folder already exist"',
+        f'tar -xvf /opt/apps/{ARCHIVE_NAME} -C /opt/apps/{APP_NAME}'
+        ],
     sudo=True,
 )
 
-server.shell(
-    name=f'Untar the code source in the /opt/apps/{APP_NAME} folder',
-    commands=[f'(test ! -d /opt/apps/{APP_NAME} &&  mkdir /opt/apps/{APP_NAME}) || echo "folder already exist"'],
-    sudo=True,
-)
 
 server.shell(
     name='build and run docker image ',
