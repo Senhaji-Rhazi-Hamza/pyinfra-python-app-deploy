@@ -11,7 +11,7 @@ apt.packages(
 
 
 server.shell(
-    name='reload nginx to ensure it has started',
+    name='Reload nginx to ensure it has started',
     commands=['nginx -s reload'],
     sudo=True,
 )

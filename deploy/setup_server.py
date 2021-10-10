@@ -1,32 +1,33 @@
 import os
 
 from pyinfra import host
-from pyinfra.operations import server, init, files
-from pyinfra.operations import apt
+from pyinfra.operations import server, files
 from pyinfra import local
 
 
 ROOT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-# Package the app excluding deployment folder
 APP_NAME="my_server_app"
 DOCKER_IMAGE="my_py_app"
 DOCKER_TAG="0.0.0"
 ARCHIVE_NAME='app.tar.gz'
 
+# Package your app into an archive excluding deployment folder
 local.shell(
     f"tar -cvf  {ROOT_PATH}/deploy/files/{ARCHIVE_NAME} " +
     f"--exclude {ROOT_PATH}/deploy {ROOT_PATH}/* -C {ROOT_PATH} ."
 )
 
 
-
+# install docker if not installed
 local.include('tasks/install_docker.py')
+
+# install nginx if not installed
 local.include('tasks/install_nginx.py')
 
 files.put(
-    name='copy src code',
+    name='Copy src code to remote machine',
     src='files/app.tar.gz',
     dest='/opt/apps/app.tar.gz',
     mode='644',
@@ -44,9 +45,8 @@ server.shell(
 
 
 server.shell(
-    name='build and run docker image ',
+    name='Build and run docker image ',
     commands=[
-       # "cd /opt/apps/my_server_app/ && docker image build --rm -t py_app:0.0.0 -f Dockerfile ."
         f"cd /opt/apps/{APP_NAME}/ && sudo docker image build --rm -t {DOCKER_IMAGE}:{DOCKER_TAG} -f Dockerfile .",
         f"sudo docker run -p 5000:5000 -d --restart unless-stopped {DOCKER_IMAGE}:{DOCKER_TAG}"
         ],
@@ -55,14 +55,14 @@ server.shell(
 )
 
 files.put(
-    name='copy nginx conf',
+    name='Copy nginx conf',
     src='./templates/nginx.conf',
     dest='/etc/nginx/sites-available/app.conf',
     sudo=True,
 )
 
 server.shell(
-    name='run nginx conf',
+    name='Run nginx conf',
     commands=[
         "sudo ln -s /etc/nginx/sites-available/app.conf /etc/nginx/sites-enabled/",
         "sudo systemctl restart nginx",
