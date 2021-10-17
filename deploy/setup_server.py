@@ -9,6 +9,7 @@ ROOT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 APP_NAME="my_server_app"
+CONTAINER_NAME="awsome_app"
 DOCKER_IMAGE="my_py_app"
 DOCKER_TAG="0.0.0"
 ARCHIVE_NAME='app.tar.gz'
@@ -48,23 +49,24 @@ server.shell(
     name='Build and run docker image ',
     commands=[
         f"cd /opt/apps/{APP_NAME}/ && sudo docker image build --rm -t {DOCKER_IMAGE}:{DOCKER_TAG} -f Dockerfile .",
-        f"sudo docker run -p 5000:5000 -d --restart unless-stopped {DOCKER_IMAGE}:{DOCKER_TAG}"
+        f"docker stop {CONTAINER_NAME} || true && docker rm {CONTAINER_NAME} || true",
+        f"sudo docker run --name {CONTAINER_NAME} -p 5000:5000 -d --restart unless-stopped {DOCKER_IMAGE}:{DOCKER_TAG}"
         ],
     get_pty=True,
     sudo=True
 )
 
 files.put(
-    name='Copy nginx conf',
+    name='Copy nginx conf from host to remote',
     src='./templates/nginx.conf',
     dest='/etc/nginx/sites-available/app.conf',
     sudo=True,
 )
 
 server.shell(
-    name='Run nginx conf',
+    name='Restart on remote machine the nginx server with the new configuration',
     commands=[
-        "sudo ln -s /etc/nginx/sites-available/app.conf /etc/nginx/sites-enabled/",
+        "sudo ln -s /etc/nginx/sites-available/app.conf /etc/nginx/sites-enabled/ || true",
         "sudo systemctl restart nginx",
         ],
     sudo=True

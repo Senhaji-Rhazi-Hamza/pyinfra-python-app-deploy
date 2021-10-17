@@ -5,8 +5,8 @@ COPY . /app
 COPY pyproject.toml /app
 
 WORKDIR /app
-RUN rm -r .venv 
-RUN rm poetry.lock
+RUN  (test ! -d .venv) || rm -rf .venv
+RUN (test ! poetry.lock) || rm poetry.lock
 
 ENV PYTHONPATH=${PYTHONPATH}:${PWD}
 
